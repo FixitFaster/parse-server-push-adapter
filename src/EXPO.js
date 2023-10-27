@@ -6,7 +6,7 @@ import Parse from 'parse';
 import log from 'npmlog';
 import Expo from 'expo-server-sdk';
 import "babel-polyfill";
-import { randomString } from './PushAdapterUtils';
+import { randomString, handleCallback } from './PushAdapterUtils';
 
 const LOG_PREFIX = 'parse-server-push-adapter EXPO';
 const GCMRegistrationTokensMax = 1000;
@@ -96,6 +96,9 @@ EXPO.prototype.send = function(data, devices) {
       receiptIds.push(ticket.id);
     }
   }
+
+  //Post Reciepts to callback
+  handleCallback(deviceTokens, receiptIds);
 
   let receiptIdChunks = this.sender.chunkPushNotificationReceiptIds(receiptIds);
   (async () => {

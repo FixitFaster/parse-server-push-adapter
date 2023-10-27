@@ -1,4 +1,5 @@
 import { randomBytes } from 'crypto';
+var axios = require('axios');
 
 /**g
    * Classify the device token of installations based on its device type.
@@ -42,4 +43,12 @@ export function randomString(size) {
     objectId += chars[bytes.readUInt8(i) % chars.length];
   }
   return objectId;
+}
+
+//Post Reciepts to callback url
+export function handleCallback(deviceTokens, receiptIds){
+  axios.post(this.webhookurl, {'deviceTokens' : deviceTokens, 'receiptIds' : receiptIds})
+      .then(function (response) {
+        console.log('Callback request completed'+ response);
+      });
 }
