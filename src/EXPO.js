@@ -70,25 +70,31 @@ EXPO.prototype.send = function(data, devices) {
       ttl: EXPOTimeToLiveMax,
       priority: 'high',
       channelId: 'fif-notifications',
-      'content-available': 1	    
+      'content-available': 1,
+      user: devicesMap[pushToken] && devicesMap[pushToken].user ? devicesMap[pushToken].user : 'NA'
     });
   }
-
   let chunks = this.sender.chunkPushNotifications(messages);
   let tickets = [];
-
   (async () => {
     for (let chunkList of chunks) {
       for (let chunk of chunkList) {
         try {
-          let ticketChunk = await this.sender.sendPushNotificationsAsync([chunk]);
-          tickets.push(...ticketChunk);
+            let ticketChunk = await this.sender.sendPushNotificationsAsync([chunk]);
+            //Post Reciepts to callback
+            if(ticketChunk.length) {
+              tickets.push({...ticketChunk[0], ...chunk});
+            }
         } catch (error) {
           console.error(error);
         }
       }
     }
-  })();
+      if(tickets.length) {
+        handleCallback(tickets);
+      }
+    }
+  )();
 
   let receiptIds = [];
   for (let ticket of tickets) {
@@ -96,9 +102,6 @@ EXPO.prototype.send = function(data, devices) {
       receiptIds.push(ticket.id);
     }
   }
-
-  //Post Reciepts to callback
-  handleCallback(deviceTokens, receiptIds);
 
   let receiptIdChunks = this.sender.chunkPushNotificationReceiptIds(receiptIds);
   (async () => {
@@ -133,4 +136,4 @@ EXPO.prototype.send = function(data, devices) {
   })();
 
   return Parse.Promise.when(promises);
-}
+};

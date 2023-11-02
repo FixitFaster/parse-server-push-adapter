@@ -23,7 +23,8 @@ export function classifyInstallations(installations, validPushTypes) {
       devices.push({
         deviceToken: installation.deviceToken,
         deviceType: installation.deviceType,
-        appIdentifier: installation.appIdentifier
+        appIdentifier: installation.appIdentifier,
+        user: installation.user,
       });
     }
   }
@@ -46,8 +47,8 @@ export function randomString(size) {
 }
 
 //Post Reciepts to callback url
-export function handleCallback(deviceTokens, receiptIds){
-  axios.post(this.webhookurl, {'deviceTokens' : deviceTokens, 'receiptIds' : receiptIds})
+export function handleCallback(pushStatusData){
+  axios.post(this.webhookurl, {'pushStatusData' : pushStatusData})
       .then(function (response) {
         console.log('Callback request completed'+ response);
       });
