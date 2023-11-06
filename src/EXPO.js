@@ -14,6 +14,7 @@ const EXPOTimeToLiveMax = 4 * 7 * 24 * 60 * 60; // GCM allows a max of 4 weeks
 
 export default function EXPO(args) {
   this.sender = new Expo();
+  this.webhookurl = args.webhookurl;	
 }
 
 /**
@@ -91,7 +92,7 @@ EXPO.prototype.send = function(data, devices) {
       }
     }
       if(tickets.length) {
-        handleCallback(tickets);
+        handleCallback(this.webhookurl, tickets);
       }
     }
   )();
