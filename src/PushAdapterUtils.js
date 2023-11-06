@@ -47,8 +47,8 @@ export function randomString(size) {
 }
 
 //Post Reciepts to callback url
-export function handleCallback(pushStatusData){
-  axios.post(this.webhookurl, {'pushStatusData' : pushStatusData})
+export function handleCallback(webhookurl, pushStatusData){
+  axios.post(webhookurl, {'pushStatusData' : pushStatusData})
       .then(function (response) {
         console.log('Callback request completed'+ response);
       });
